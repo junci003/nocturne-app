@@ -4,7 +4,7 @@
 > 说场景、预算和喜好 → 输出花材清单（含枝数/单价）、预算拆分、制作步骤、养护建议，以及一张由配方直接渲染的效果图。
 
 **相关资产**
-- 🌐 在线体验：见本仓库 About 中的分享链接（由 WorkBuddy「发布为应用」生成）
+- 🌐 在线体验：https://nocturne-florist.app.workbuddy.host/?sharecode=LMPGODNUNX
 - 🧩 配方引擎 Skill（ClawHub）：https://clawhub.ai/junci003/skills/florist-recipe
 - 📦 本仓库 = 可运行应用 + 同款引擎 Skill（`florist-recipe/` 子目录，可单独安装）
 
