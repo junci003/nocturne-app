@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>夜花房 NOCTURNE · AI 花艺师</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.webmanifest" />
+</head>
+<body>
+  <div class="phone">
+    <!-- 顶部状态条 -->
+    <div class="statusbar">
+      <span id="clock">22:00</span>
+      <span class="sb-right">🌙 夜花房</span>
+    </div>
+
+    <!-- 屏 1 首页 -->
+    <section class="screen active" id="screen-home">
+      <div class="home-hero">
+        <div class="brand">夜花房</div>
+        <div class="brand-en">NOCTURNE</div>
+        <p class="slogan">今晚，插一束花。</p>
+        <p class="sub">说场景和预算，给你一份能直接照着做的花艺配方——<br/>不是一张好看的图。</p>
+      </div>
+      <div class="home-actions">
+        <button class="btn-primary" data-go="screen-input">开始 AI 设计</button>
+        <button class="btn-ghost" disabled title="下一版规划中">📷 拍下我有的花</button>
+      </div>
+      <div class="recent">
+        <div class="recent-title">最近方案</div>
+        <div id="recent-list" class="recent-list"><div class="empty">还没有方案，去设计第一束吧。</div></div>
+      </div>
+    </section>
+
+    <!-- 屏 2 需求输入 -->
+    <section class="screen" id="screen-input">
+      <div class="topbar"><button class="back" data-go="screen-home">‹</button><span>需求输入</span><span class="spacer"></span></div>
+      <div class="form">
+        <div class="field"><label>场景 / 用途</label>
+          <div class="chips" id="occasion-chips">
+            <button class="chip" data-val="居家瓶插">居家瓶插</button>
+            <button class="chip" data-val="生日">生日</button>
+            <button class="chip" data-val="表白">表白</button>
+            <button class="chip" data-val="探病">探病</button>
+            <button class="chip" data-val="道歉">道歉</button>
+            <button class="chip" data-val="节日">节日</button>
+            <button class="chip" data-val="商务">商务</button>
+          </div>
+        </div>
+
+        <div class="field"><label>风格</label>
+          <div class="chips" id="style-chips">
+            <button class="chip" data-val="自然">自然</button>
+            <button class="chip" data-val="法式">法式</button>
+            <button class="chip" data-val="韩式">韩式</button>
+            <button class="chip" data-val="中式">中式</button>
+            <button class="chip" data-val="极简">极简</button>
+          </div>
+        </div>
+
+        <div class="field"><label>主色 <span class="hint">最多 3 个色相</span></label>
+          <div class="chips" id="color-chips">
+            <button class="chip color" data-val="粉">粉</button>
+            <button class="chip color" data-val="白">白</button>
+            <button class="chip color" data-val="紫">紫</button>
+            <button class="chip color" data-val="香槟">香槟</button>
+            <button class="chip color" data-val="黄">黄</button>
+            <button class="chip color" data-val="红">红</button>
+            <button class="chip color" data-val="绿">绿</button>
+            <button class="chip color" data-val="蓝">蓝</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>总预算 <span class="hint" id="budget-label">¥200</span></label>
+          <input type="range" id="budget" min="80" max="600" step="10" value="200" />
+          <div class="range-ends"><span>¥80</span><span>¥600</span></div>
+        </div>
+
+        <div class="field"><label>摆放位置</label>
+          <div class="chips" id="size-chips">
+            <button class="chip" data-val="床头/办公">床头/办公</button>
+            <button class="chip" data-val="餐桌/玄关">餐桌/玄关</button>
+            <button class="chip" data-val="落地/布置">落地/布置</button>
+          </div>
+        </div>
+
+        <div class="field toggles">
+          <label class="switch"><input type="checkbox" id="pet" /> <span>家里有猫/狗（排除有毒花材）</span></label>
+          <label class="switch"><input type="checkbox" id="pollen" /> <span>花粉过敏（排除花粉量大/浓香）</span></label>
+          <label class="switch"><input type="checkbox" id="include-vessel" checked /> <span>预算含花器</span></label>
+        </div>
+      </div>
+      <div class="bottom-fixed">
+        <button class="btn-primary" id="btn-generate">生成方案</button>
+      </div>
+    </section>
+
+    <!-- 屏 3 方案结果 -->
+    <section class="screen" id="screen-result">
+      <div class="topbar"><button class="back" data-go="screen-input">‹</button><span>方案结果</span><span class="spacer"></span></div>
+      <div class="result-scroll">
+        <div class="bouquet" id="bouquet"></div>
+        <div class="result-meta" id="result-meta"></div>
+        <div class="price-row">
+          <div class="price-card"><span class="pl">花材</span><span class="pv" id="flower-total">¥0</span></div>
+          <div class="price-card"><span class="pl">含花器</span><span class="pv" id="grand-total">¥0</span></div>
+          <div class="price-card"><span class="pl">剩余</span><span class="pv" id="remaining">¥0</span></div>
+        </div>
+        <div class="adjust-row">
+          <button class="btn-ghost sm" id="btn-cheaper">便宜 30%</button>
+          <button class="btn-ghost sm" id="btn-color-shift">换个配色</button>
+        </div>
+        <div class="warnings" id="warnings"></div>
+      </div>
+      <div class="bottom-fixed">
+        <button class="btn-primary" data-go="screen-detail">查看制作详情</button>
+      </div>
+    </section>
+
+    <!-- 屏 4 制作详情 -->
+    <section class="screen" id="screen-detail">
+      <div class="topbar"><button class="back" data-go="screen-result">‹</button><span>制作详情</span><span class="spacer"></span></div>
+      <div class="result-scroll">
+        <div class="section-title">花材清单</div>
+        <div id="recipe-lines" class="lines"></div>
+        <div class="section-title">制作步骤</div>
+        <ol id="steps" class="steps"></ol>
+        <div class="section-title">养护建议</div>
+        <ul id="care" class="care"></ul>
+        <button class="btn-ghost sm save-btn" id="btn-save">保存到我的</button>
+      </div>
+    </section>
+
+    <!-- 屏 5 作品 -->
+    <section class="screen" id="screen-works">
+      <div class="topbar"><button class="back" data-go="screen-home">‹</button><span>我的作品</span><span class="spacer"></span></div>
+      <div class="works-body">
+        <label class="upload">
+          <input type="file" id="photo" accept="image/*" hidden />
+          <span>＋ 上传成品照片</span>
+        </label>
+        <img id="photo-preview" class="photo-preview" hidden />
+        <div id="critique" class="critique"></div>
+      </div>
+    </section>
+
+    <!-- 屏 6 我的 -->
+    <section class="screen" id="screen-profile">
+      <div class="topbar"><button class="back" data-go="screen-home">‹</button><span>我的</span><span class="spacer"></span></div>
+      <div class="profile-body">
+        <div class="avatar">余</div>
+        <div class="pname">夜花房会员</div>
+        <div class="section-title">历史方案</div>
+        <div id="history-list" class="history-list"></div>
+        <div class="section-title">偏好</div>
+        <div class="prefs">
+          <div>默认风格：<b id="pref-style">自然</b></div>
+          <div>默认预算：<b id="pref-budget">¥200</b></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 底部 Tab -->
+    <nav class="tabbar">
+      <button class="tab active" data-go="screen-home">🌙<span>首页</span></button>
+      <button class="tab" data-go="screen-works">🖼️<span>作品</span></button>
+      <button class="tab" data-go="screen-profile">👤<span>我的</span></button>
+    </nav>
+  </div>
+
+  <script src="data/flowers.js"></script>
+  <script src="engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
