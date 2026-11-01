@@ -1,0 +1,10 @@
+{
+  "name": "夜花房 NOCTURNE · AI 花艺师",
+  "short_name": "夜花房",
+  "description": "说场景和预算，生成能直接照着做的花艺配方：花材清单、预算、制作步骤与养护建议。",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#141110",
+  "theme_color": "#141110",
+  "icons": []
+}
